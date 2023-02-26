@@ -52,7 +52,6 @@ class PaginatedSliverListView<T, F> extends ConsumerWidget {
   final AutoDisposeStateNotifierProvider<BasePaginatedController<T, F>,
       PaginatedState<T>> paginatedController;
   final WidgetFromItemBuilder<T> itemBuilder;
-  final EdgeInsetsGeometry? itemPadding;
   final PaginationErrorBuilder? errorBuilder;
   final WidgetBuilder? loadingBuilder;
 
@@ -60,7 +59,6 @@ class PaginatedSliverListView<T, F> extends ConsumerWidget {
     super.key,
     required this.paginatedController,
     required this.itemBuilder,
-    this.itemPadding,
     this.loadingBuilder,
     this.errorBuilder,
   });
@@ -98,13 +96,13 @@ class PaginatedBottomWidget extends ConsumerWidget {
       PaginatedState> paginatedController;
 
   final PaginationErrorBuilder? onGoingErrorBuilder;
-  final WidgetBuilder? onGoingLoading;
+  final WidgetBuilder onGoingLoading;
 
   const PaginatedBottomWidget({
     super.key,
     required this.paginatedController,
+    required this.onGoingLoading,
     this.onGoingErrorBuilder,
-    this.onGoingLoading,
   });
 
   @override
@@ -112,8 +110,7 @@ class PaginatedBottomWidget extends ConsumerWidget {
     return ref.watch(paginatedController).maybeWhen(
           onGoingError: (items, e, stk) =>
               onGoingErrorBuilder?.call(context, e) ?? const SizedBox.shrink(),
-          onGoingLoading: (items) =>
-              onGoingLoading?.call(context) ?? const SizedBox.shrink(),
+          onGoingLoading: (items) => onGoingLoading(context),
           orElse: () => const SizedBox.shrink(),
         );
   }
