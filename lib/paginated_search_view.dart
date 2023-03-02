@@ -18,8 +18,8 @@ abstract class PaginatedSearchView<T, F> extends ConsumerStatefulWidget {
   });
 }
 
-abstract class PaginatedSearchViewState<T, F>
-    extends ConsumerState<PaginatedSearchView<T, F>> {
+abstract class PaginatedSearchViewState<P extends PaginatedSearchView>
+    extends ConsumerState<P> {
   final scrollController = ScrollController();
 
   @override
