@@ -50,7 +50,7 @@ class MyHomePage extends PaginatedSearchView<int, dynamic> {
   }
 }
 
-class _MyHomePageState extends PaginatedSearchViewState<int, dynamic> {
+class _MyHomePageState extends PaginatedSearchViewState<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
