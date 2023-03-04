@@ -1,3 +1,6 @@
+## 1.0.4
+* Added helper for getting the last item from the controller
+
 ## 1.0.3
 * Made the items field in BasePaginatedController public to make it compatible with firebase cursors
 
