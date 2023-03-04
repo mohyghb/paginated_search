@@ -5,19 +5,19 @@ import 'package:riverpod/riverpod.dart';
 import 'paginated_state.dart';
 
 
-typedef SearchProvider<T> = Future<List<T>> Function(
-    BasePaginatedController controller);
+typedef SearchProvider<T,F> = Future<List<T>> Function(
+    BasePaginatedController<T,F> controller);
 
 class BasePaginatedController<T, F> extends StateNotifier<PaginatedState<T>> {
   final List<T> _items = [];
-  final SearchProvider<T> searchProvider;
+  final SearchProvider<T,F> searchProvider;
   final int batchSize;
   final TextEditingController searchController = TextEditingController();
   final debounceDuration = const Duration(milliseconds: 500);
   // helper getter
   String get query => searchController.text;
   // mutable variables
-  F? currentFilter;
+  F currentFilter;
   bool hasNoMoreItems = false;
   int page = 1;
 
@@ -27,7 +27,7 @@ class BasePaginatedController<T, F> extends StateNotifier<PaginatedState<T>> {
   BasePaginatedController({
     required this.searchProvider,
     required this.batchSize,
-    this.currentFilter,
+    required this.currentFilter,
   }) : super(const PaginatedState.data([]));
 
   // appends the data to the previous [_items]
@@ -71,7 +71,7 @@ class BasePaginatedController<T, F> extends StateNotifier<PaginatedState<T>> {
   }
 
   /// set the filter and do a [search]
-  void setFilter(F? filter, {bool performSearch = true}) {
+  void setFilter(F filter, {bool performSearch = true}) {
     currentFilter = filter;
     if (performSearch) {
       search();
