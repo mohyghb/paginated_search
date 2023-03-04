@@ -1,3 +1,6 @@
+## 1.0.3
+* Made the items field in BasePaginatedController public to make it compatible with firebase cursors
+
 ## 1.0.2
 * now require a filter to be passed in
 
