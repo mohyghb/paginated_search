@@ -21,6 +21,10 @@ class BasePaginatedController<T, F> extends StateNotifier<PaginatedState<T>> {
   bool hasNoMoreItems = false;
   int page = 1;
 
+  // helper getter for getting the last item if it exists
+  // can be passed in the firebase queries for pagination
+  T? get lastItemOrNull => items.isEmpty ? null : items.last;
+
   // to debounce multiple requests
   Timer _timer = Timer(const Duration(milliseconds: 0), () {});
 
