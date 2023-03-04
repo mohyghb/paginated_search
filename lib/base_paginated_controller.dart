@@ -9,7 +9,7 @@ typedef SearchProvider<T,F> = Future<List<T>> Function(
     BasePaginatedController<T,F> controller);
 
 class BasePaginatedController<T, F> extends StateNotifier<PaginatedState<T>> {
-  final List<T> _items = [];
+  final List<T> items = [];
   final SearchProvider<T,F> searchProvider;
   final int batchSize;
   final TextEditingController searchController = TextEditingController();
@@ -35,18 +35,18 @@ class BasePaginatedController<T, F> extends StateNotifier<PaginatedState<T>> {
     hasNoMoreItems = results.length < batchSize;
 
     if (results.isEmpty) {
-      state = PaginatedState.data(_items);
+      state = PaginatedState.data(items);
     } else {
-      state = PaginatedState.data(_items..addAll(results));
+      state = PaginatedState.data(items..addAll(results));
     }
   }
 
   /// searches for the content inside the [searchController]
-  /// resets all the other class variables such as [_items], [hasNoMoreItems], and [page]
+  /// resets all the other class variables such as [items], [hasNoMoreItems], and [page]
   void search() async {
     if (query.isEmpty) {
       // if the search is empty, just show them the current items, no need to search
-      state = PaginatedState.data(_items);
+      state = PaginatedState.data(items);
       return;
     }
 
@@ -63,7 +63,7 @@ class BasePaginatedController<T, F> extends StateNotifier<PaginatedState<T>> {
     }
 
     // resetting the variables for this new search
-    _items.clear();
+    items.clear();
     hasNoMoreItems = false;
     page = 1;
 
@@ -90,14 +90,14 @@ class BasePaginatedController<T, F> extends StateNotifier<PaginatedState<T>> {
 
     if (hasNoMoreItems) {
       return;
-    } else if (state == PaginatedState.onGoingLoading(_items)) {
+    } else if (state == PaginatedState.onGoingLoading(items)) {
       return;
     }
 
     debugPrint('fetchNextBatch $query');
     // use the same query to fetch the next items in search
     // show ongoing loading
-    state = PaginatedState.onGoingLoading(_items);
+    state = PaginatedState.onGoingLoading(items);
     // increase the page number
     page += 1;
 
