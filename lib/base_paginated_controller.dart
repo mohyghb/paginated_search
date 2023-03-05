@@ -4,36 +4,34 @@ import 'package:riverpod/riverpod.dart';
 
 import 'paginated_state.dart';
 
-
-typedef SearchProvider<T,F> = Future<List<T>> Function(
-    BasePaginatedController<T,F> controller);
+typedef SearchProvider<T, F> = Future<List<T>> Function(
+    BasePaginatedController<T, F> controller);
 
 class BasePaginatedController<T, F> extends StateNotifier<PaginatedState<T>> {
   final List<T> items = [];
-  final SearchProvider<T,F> searchProvider;
+  final SearchProvider<T, F> searchProvider;
   final int batchSize;
   final TextEditingController searchController = TextEditingController();
-  final debounceDuration = const Duration(milliseconds: 500);
-  // helper getter
-  String get query => searchController.text;
+  final Duration debounceDuration;
   // mutable variables
   F currentFilter;
   bool hasNoMoreItems = false;
   int page = 1;
-
+  // to debounce multiple requests
+  Timer? _timer;
   // helper getter for getting the last item if it exists
   // can be passed in the firebase queries for pagination
   T? get lastItemOrNull => items.isEmpty ? null : items.last;
+  // helper getter
+  String get query => searchController.text;
 
-  // to debounce multiple requests
-  Timer? _timer;
 
   BasePaginatedController({
     required this.searchProvider,
     required this.batchSize,
     required this.currentFilter,
+    this.debounceDuration = const Duration(milliseconds: 500),
   }) : super(const PaginatedState.data([]));
-
 
   // used to fetch the first set of items
   // usually is called on the constructor when creating a provider
@@ -56,8 +54,10 @@ class BasePaginatedController<T, F> extends StateNotifier<PaginatedState<T>> {
 
   /// searches for the content inside the [searchController]
   /// resets all the other class variables such as [items], [hasNoMoreItems], and [page]
-  void search() async {
-    if (query.isEmpty) {
+  void search({
+    bool searchIfEmpty = false,
+  }) async {
+    if (query.isEmpty && !searchIfEmpty) {
       // if the search is empty, just show them the current items, no need to search
       state = PaginatedState.data(items);
       return;
@@ -87,7 +87,8 @@ class BasePaginatedController<T, F> extends StateNotifier<PaginatedState<T>> {
   void setFilter(F filter, {bool performSearch = true}) {
     currentFilter = filter;
     if (performSearch) {
-      search();
+      // still perform a search when the query is empty
+      search(searchIfEmpty: true);
     }
   }
 
@@ -95,7 +96,6 @@ class BasePaginatedController<T, F> extends StateNotifier<PaginatedState<T>> {
   /// [addToPage] is 0 when you call [init] since it shouldn't increase the page count
   /// you are querying the first page
   Future<void> fetchNextBatch({int addToPage = 1}) async {
-
     if (_timer?.isActive == true) {
       // already processing another request
       return;
