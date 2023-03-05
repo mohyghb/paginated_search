@@ -26,13 +26,22 @@ class BasePaginatedController<T, F> extends StateNotifier<PaginatedState<T>> {
   T? get lastItemOrNull => items.isEmpty ? null : items.last;
 
   // to debounce multiple requests
-  Timer _timer = Timer(const Duration(milliseconds: 0), () {});
+  Timer? _timer;
 
   BasePaginatedController({
     required this.searchProvider,
     required this.batchSize,
     required this.currentFilter,
   }) : super(const PaginatedState.data([]));
+
+
+  // used to fetch the first set of items
+  // usually is called on the constructor when creating a provider
+  void init() {
+    if (items.isEmpty) {
+      fetchNextBatch(addToPage: 0);
+    }
+  }
 
   // appends the data to the previous [_items]
   void updateItems(List<T> results) {
@@ -83,9 +92,11 @@ class BasePaginatedController<T, F> extends StateNotifier<PaginatedState<T>> {
   }
 
   /// Fetch the next set of items from the same search
-  Future<void> fetchNextBatch() async {
+  /// [addToPage] is 0 when you call [init] since it shouldn't increase the page count
+  /// you are querying the first page
+  Future<void> fetchNextBatch({int addToPage = 1}) async {
 
-    if (_timer.isActive) {
+    if (_timer?.isActive == true) {
       // already processing another request
       return;
     }
@@ -103,7 +114,7 @@ class BasePaginatedController<T, F> extends StateNotifier<PaginatedState<T>> {
     // show ongoing loading
     state = PaginatedState.onGoingLoading(items);
     // increase the page number
-    page += 1;
+    page += addToPage;
 
     _performSearch();
   }
@@ -111,7 +122,7 @@ class BasePaginatedController<T, F> extends StateNotifier<PaginatedState<T>> {
   // starts the timer so that we don't perform multiple searches at once while
   // another search is in process (timer is active)
   void _startTimer() {
-    _timer = Timer(const Duration(seconds: 1), () { });
+    _timer = Timer(const Duration(seconds: 1), () {});
   }
 
   /// calls the passed in [searchProvider] to retrieve items
