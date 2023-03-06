@@ -25,7 +25,6 @@ class BasePaginatedController<T, F> extends StateNotifier<PaginatedState<T>> {
   // helper getter
   String get query => searchController.text;
 
-
   BasePaginatedController({
     required this.searchProvider,
     required this.batchSize,
@@ -39,6 +38,16 @@ class BasePaginatedController<T, F> extends StateNotifier<PaginatedState<T>> {
     if (items.isEmpty) {
       fetchNextBatch(addToPage: 0);
     }
+  }
+
+  // refreshes the items (loads them again)
+  // can be used with a pull-to-refresh mechanism
+  void refresh() {
+    items.clear();
+    _timer = null;
+    page = 1;
+    hasNoMoreItems = false;
+    init();
   }
 
   // appends the data to the previous [_items]
