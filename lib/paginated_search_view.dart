@@ -9,7 +9,7 @@ typedef PaginationErrorBuilder = Widget Function(
 
 // Automatically fetches the next batch using the paginatedController
 abstract class PaginatedSearchView<T, F> extends ConsumerStatefulWidget {
-  final StateNotifierProvider<BasePaginatedController<T, F>, PaginatedState<T>>
+  final AutoDisposeStateNotifierProvider<BasePaginatedController<T, F>, PaginatedState<T>>
       paginatedController;
 
   // whether to invalidate the [paginatedController] or not when this widget is disposed
@@ -35,14 +35,6 @@ abstract class PaginatedSearchViewState<P extends PaginatedSearchView>
         () => fetchNextBatchOnPageEnd(scrollController, context, ref));
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    if (widget.invalidateOnDispose) {
-      ref.invalidate(widget.paginatedController);
-    }
-  }
-
   // helper method to fetch next batch of search items when user reaches near the end
   // of the max scrolling position
   void fetchNextBatchOnPageEnd(
@@ -61,7 +53,7 @@ abstract class PaginatedSearchViewState<P extends PaginatedSearchView>
 
 // Helper class for showing items of a paginated search in a sliver list view
 class PaginatedSliverListView<T, F> extends ConsumerWidget {
-  final StateNotifierProvider<BasePaginatedController<T, F>, PaginatedState<T>>
+  final AutoDisposeStateNotifierProvider<BasePaginatedController<T, F>, PaginatedState<T>>
       paginatedController;
   final WidgetFromItemBuilder<T> itemBuilder;
   final PaginationErrorBuilder? errorBuilder;
@@ -111,7 +103,7 @@ class PaginatedSliverListView<T, F> extends ConsumerWidget {
 // reaches the end of a list, we show them a progress indicator indicating that we
 // are loading the next batch of items
 class PaginatedBottomWidget extends ConsumerWidget {
-  final StateNotifierProvider<BasePaginatedController, PaginatedState>
+  final AutoDisposeStateNotifierProvider<BasePaginatedController, PaginatedState>
       paginatedController;
 
   final PaginationErrorBuilder? onGoingErrorBuilder;

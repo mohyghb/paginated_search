@@ -1,3 +1,6 @@
+## 1.1.1
+* changed the paginated controller requirement to be autoDispose again (You can keep the data with keepAlive)
+
 ## 1.1.0
 * Now you can use normal state notifiers with the paginated search (previously had to use autoDispose state notifiers)
 * Updated paginated controller to have more functionalities (init, refresh, ...)

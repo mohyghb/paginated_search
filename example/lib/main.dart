@@ -27,17 +27,19 @@ class MyApp extends StatelessWidget {
   }
 }
 
-final paginatedSearchControllerProvider = StateNotifierProvider<
+final paginatedSearchControllerProvider = StateNotifierProvider.autoDispose<
     BasePaginatedController<int, int>, PaginatedState<int>>(
-  (ref) => BasePaginatedController<int, int>(
-      searchProvider: (controller) async {
-        // mock search delay
-        controller.currentFilter;
-        await Future.delayed(const Duration(milliseconds: 400));
-        return List.generate(12, (index) => index);
-      },
-      batchSize: 12,
-      currentFilter: 2),
+  (ref) {
+    return BasePaginatedController<int, int>(
+        searchProvider: (controller) async {
+          // mock search delay
+          controller.currentFilter;
+          await Future.delayed(const Duration(milliseconds: 400));
+          return List.generate(12, (index) => index);
+        },
+        batchSize: 12,
+        currentFilter: 2);
+  },
 );
 
 class MyHomePage extends PaginatedSearchView<int, int> {
