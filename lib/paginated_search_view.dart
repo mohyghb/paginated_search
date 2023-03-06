@@ -9,12 +9,16 @@ typedef PaginationErrorBuilder = Widget Function(
 
 // Automatically fetches the next batch using the paginatedController
 abstract class PaginatedSearchView<T, F> extends ConsumerStatefulWidget {
-  final AutoDisposeStateNotifierProvider<BasePaginatedController<T, F>,
-      PaginatedState<T>> paginatedController;
+  final StateNotifierProvider<BasePaginatedController<T, F>, PaginatedState<T>>
+      paginatedController;
+
+  // whether to invalidate the [paginatedController] or not when this widget is disposed
+  final bool invalidateOnDispose;
 
   const PaginatedSearchView({
     super.key,
     required this.paginatedController,
+    this.invalidateOnDispose = true,
   });
 }
 
@@ -29,6 +33,14 @@ abstract class PaginatedSearchViewState<P extends PaginatedSearchView>
     // show more items on page end
     scrollController.addListener(
         () => fetchNextBatchOnPageEnd(scrollController, context, ref));
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    if (widget.invalidateOnDispose) {
+      ref.invalidate(widget.paginatedController);
+    }
   }
 
   // helper method to fetch next batch of search items when user reaches near the end
@@ -49,11 +61,14 @@ abstract class PaginatedSearchViewState<P extends PaginatedSearchView>
 
 // Helper class for showing items of a paginated search in a sliver list view
 class PaginatedSliverListView<T, F> extends ConsumerWidget {
-  final AutoDisposeStateNotifierProvider<BasePaginatedController<T, F>,
-      PaginatedState<T>> paginatedController;
+  final StateNotifierProvider<BasePaginatedController<T, F>, PaginatedState<T>>
+      paginatedController;
   final WidgetFromItemBuilder<T> itemBuilder;
   final PaginationErrorBuilder? errorBuilder;
   final WidgetBuilder? loadingBuilder;
+
+  // used when the items loaded is empty
+  final WidgetBuilder? emptyBuilder;
 
   const PaginatedSliverListView({
     super.key,
@@ -61,6 +76,7 @@ class PaginatedSliverListView<T, F> extends ConsumerWidget {
     required this.itemBuilder,
     this.loadingBuilder,
     this.errorBuilder,
+    this.emptyBuilder,
   });
 
   @override
@@ -68,17 +84,20 @@ class PaginatedSliverListView<T, F> extends ConsumerWidget {
     final state = ref.watch(paginatedController);
 
     return state.when(
-      data: (items) => _buildSliverList(items),
+      data: (items) => _buildSliverList(context, items),
       loading: () =>
           loadingBuilder?.call(context) ?? const SliverToBoxAdapter(),
       error: (e, stk) =>
           errorBuilder?.call(context, e) ?? const SliverToBoxAdapter(),
-      onGoingLoading: (items) => _buildSliverList(items),
-      onGoingError: (items, e, stk) => _buildSliverList(items),
+      onGoingLoading: (items) => _buildSliverList(context, items),
+      onGoingError: (items, e, stk) => _buildSliverList(context, items),
     );
   }
 
-  Widget _buildSliverList(List<T> items) {
+  Widget _buildSliverList(BuildContext context, List<T> items) {
+    if (items.isEmpty && emptyBuilder != null) {
+      return emptyBuilder?.call(context) ?? const SliverToBoxAdapter();
+    }
     return SliverList(
       delegate: SliverChildBuilderDelegate(
         (context, index) => itemBuilder(items[index]),
@@ -92,8 +111,8 @@ class PaginatedSliverListView<T, F> extends ConsumerWidget {
 // reaches the end of a list, we show them a progress indicator indicating that we
 // are loading the next batch of items
 class PaginatedBottomWidget extends ConsumerWidget {
-  final AutoDisposeStateNotifierProvider<BasePaginatedController,
-      PaginatedState> paginatedController;
+  final StateNotifierProvider<BasePaginatedController, PaginatedState>
+      paginatedController;
 
   final PaginationErrorBuilder? onGoingErrorBuilder;
   final WidgetBuilder onGoingLoading;

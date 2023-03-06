@@ -22,29 +22,30 @@ class MyApp extends StatelessWidget {
         colorSchemeSeed: Colors.blue.shade900,
       ),
       debugShowCheckedModeBanner: false,
-      home: MyHomePage(
-        paginatedController: paginatedSearchControllerProvider,
-      ),
+      home: MyHomePage(paginatedController: paginatedSearchControllerProvider),
     );
   }
 }
 
-final paginatedSearchControllerProvider = StateNotifierProvider.autoDispose<
+final paginatedSearchControllerProvider = StateNotifierProvider<
     BasePaginatedController<int, int>, PaginatedState<int>>(
   (ref) => BasePaginatedController<int, int>(
-    searchProvider: (controller) async {
-      // mock search delay
-      controller.currentFilter;
-      await Future.delayed(const Duration(milliseconds: 400));
-      return List.generate(12, (index) => index);
-    },
-    batchSize: 12,
-    currentFilter: 2
-  ),
+      searchProvider: (controller) async {
+        // mock search delay
+        controller.currentFilter;
+        await Future.delayed(const Duration(milliseconds: 400));
+        return List.generate(12, (index) => index);
+      },
+      batchSize: 12,
+      currentFilter: 2),
 );
 
-class MyHomePage extends PaginatedSearchView<int, dynamic> {
-  const MyHomePage({super.key, required super.paginatedController});
+class MyHomePage extends PaginatedSearchView<int, int> {
+  const MyHomePage({
+    super.key,
+    required super.paginatedController,
+    super.invalidateOnDispose = false,
+  });
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() {
@@ -52,66 +53,68 @@ class MyHomePage extends PaginatedSearchView<int, dynamic> {
   }
 }
 
-class _MyHomePageState extends PaginatedSearchViewState<MyHomePage> {
+class _MyHomePageState extends PaginatedSearchViewState<MyHomePage>
+    with TickerProviderStateMixin {
+  late final tabController = TabController(length: 2, vsync: this);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle.dark,
-        child: SafeArea(
-          bottom: false,
-          child: CustomScrollView(
-            controller: scrollController,
-            slivers: [
-              s8HeightBoxSliver,
-              SliverAppBar(
-                centerTitle: false,
-                title: Text(
-                  'Paginated Search',
-                  style: context.textTheme.headline5.bold,
-                ),
+        body: AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.dark,
+      child: SafeArea(
+        bottom: false,
+        child: CustomScrollView(
+          controller: scrollController,
+          slivers: [
+            s8HeightBoxSliver,
+            SliverAppBar(
+              centerTitle: false,
+              title: Text(
+                'Paginated Search',
+                style: context.textTheme.headline5.bold,
               ),
-              const Text('Search through your data easily')
-                  .withPadding(s16HorizontalPadding)
+            ),
+            const Text('Search through your data easily')
+                .withPadding(s16HorizontalPadding)
+                .asSliver,
+            s32HeightBoxSliver,
+            TextField(
+              controller: ref
+                  .watch(paginatedSearchControllerProvider.notifier)
+                  .searchController,
+              onChanged: (value) =>
+                  ref.read(paginatedSearchControllerProvider.notifier).search(),
+              decoration: const InputDecoration(
+                prefixIcon: Icon(Icons.search_rounded),
+                hintText: 'Search...',
+                filled: true,
+              ),
+            ).withPadding(s16HorizontalPadding).asSliver,
+            s32HeightBoxSliver,
+            PaginatedSliverListView(
+              paginatedController: paginatedSearchControllerProvider,
+              itemBuilder: (item) => Card(
+                color: context.colorScheme.tertiaryContainer,
+                child: Text(
+                  'Item $item',
+                  style:
+                      TextStyle(color: context.colorScheme.onTertiaryContainer),
+                ).withPadding(s16Padding),
+              ).withPadding(s16HorizontalPadding),
+              loadingBuilder: (_) => const CircularProgressIndicator.adaptive()
+                  .alignCenter
                   .asSliver,
-              s32HeightBoxSliver,
-              TextField(
-                controller: ref
-                    .read(paginatedSearchControllerProvider.notifier)
-                    .searchController,
-                onChanged: (value) =>
-                    ref.read(paginatedSearchControllerProvider.notifier).search(),
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(Icons.search_rounded),
-                  hintText: 'Search...',
-                  filled: true,
-                ),
-              ).withPadding(s16HorizontalPadding).asSliver,
-              s32HeightBoxSliver,
-              PaginatedSliverListView(
-                paginatedController: super.widget.paginatedController,
-                itemBuilder: (item) => Card(
-                  color: context.colorScheme.tertiaryContainer,
-                  child: Text(
-                    'Item $item',
-                    style:
-                        TextStyle(color: context.colorScheme.onTertiaryContainer),
-                  ).withPadding(s16Padding),
-                ).withPadding(s16HorizontalPadding),
-                loadingBuilder: (_) => const CircularProgressIndicator.adaptive()
-                    .alignCenter
-                    .asSliver,
-              ),
-              s32HeightBoxSliver,
-              PaginatedBottomWidget(
-                paginatedController: super.widget.paginatedController,
-                onGoingLoading: (context) =>
-                    const CircularProgressIndicator.adaptive().alignCenter,
-              ).asSliver,
-            ],
-          ),
-        ).withHeaderOverlayGlow(context: context),
-      ),
-    );
+            ),
+            s32HeightBoxSliver,
+            PaginatedBottomWidget(
+              paginatedController: paginatedSearchControllerProvider,
+              onGoingLoading: (context) =>
+                  const CircularProgressIndicator.adaptive().alignCenter,
+            ).asSliver,
+          ],
+        ),
+      ).withHeaderOverlayGlow(context: context),
+    ));
   }
 }
