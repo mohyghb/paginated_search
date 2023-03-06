@@ -1,3 +1,9 @@
+## 1.1.0
+* Now you can use normal state notifiers with the paginated search (previously had to use autoDispose state notifiers)
+* Updated paginated controller to have more functionalities (init, refresh, ...)
+* Fixed bugs with search timer
+* Did some refactoring
+
 ## 1.0.4
 * Added helper for getting the last item from the controller
 

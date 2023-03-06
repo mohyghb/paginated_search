@@ -22,17 +22,7 @@ class MyApp extends StatelessWidget {
         colorSchemeSeed: Colors.blue.shade900,
       ),
       debugShowCheckedModeBanner: false,
-      home: Builder(
-        builder: (context) => Scaffold(
-          floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => MyHomePage(
-                paginatedController: paginatedSearchControllerProvider,
-              ),));
-            },
-          ),
-        ),
-      ),
+      home: MyHomePage(paginatedController: paginatedSearchControllerProvider),
     );
   }
 }
@@ -51,7 +41,11 @@ final paginatedSearchControllerProvider = StateNotifierProvider<
 );
 
 class MyHomePage extends PaginatedSearchView<int, int> {
-  const MyHomePage({super.key, required super.paginatedController, super.invalidateOnDispose = false});
+  const MyHomePage({
+    super.key,
+    required super.paginatedController,
+    super.invalidateOnDispose = false,
+  });
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() {
@@ -66,40 +60,7 @@ class _MyHomePageState extends PaginatedSearchViewState<MyHomePage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => Scaffold(),
-          ));
-        },
-        child: Icon(Icons.add),
-      ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            TabBar(
-              controller: tabController,
-              tabs: [
-                Text('search'),
-                Text('Profile'),
-              ],
-            ),
-            s16HeightBox,
-            TabBarView(
-              controller: tabController,
-              children: [
-                firstTab(context),
-                empty,
-              ],
-            ).expanded
-          ],
-        ),
-      ),
-    );
-  }
-
-  AnnotatedRegion<SystemUiOverlayStyle> firstTab(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
+        body: AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
       child: SafeArea(
         bottom: false,
@@ -154,6 +115,6 @@ class _MyHomePageState extends PaginatedSearchViewState<MyHomePage>
           ],
         ),
       ).withHeaderOverlayGlow(context: context),
-    );
+    ));
   }
 }
