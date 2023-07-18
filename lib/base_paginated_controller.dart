@@ -94,6 +94,11 @@ class BasePaginatedController<T, F> extends StateNotifier<PaginatedState<T>> {
 
   /// set the filter and do a [search]
   void setFilter(F filter, {bool performSearch = true}) {
+    // if updated filter equals the current filter, don't perform a search
+    if (currentFilter == filter) {
+      return;
+    }
+
     currentFilter = filter;
     if (performSearch) {
       // still perform a search when the query is empty
