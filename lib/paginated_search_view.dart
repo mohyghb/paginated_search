@@ -51,54 +51,6 @@ abstract class PaginatedSearchViewState<P extends PaginatedSearchView>
   }
 }
 
-// Helper class for showing items of a paginated search in a sliver list view
-class PaginatedSliverListView<T, F> extends ConsumerWidget {
-  final AutoDisposeStateNotifierProvider<BasePaginatedController<T, F>, PaginatedState<T>>
-      paginatedController;
-  final WidgetFromItemBuilder<T> itemBuilder;
-  final PaginationErrorBuilder? errorBuilder;
-  final WidgetBuilder? loadingBuilder;
-
-  // used when the items loaded is empty
-  final WidgetBuilder? emptyBuilder;
-
-  const PaginatedSliverListView({
-    super.key,
-    required this.paginatedController,
-    required this.itemBuilder,
-    this.loadingBuilder,
-    this.errorBuilder,
-    this.emptyBuilder,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(paginatedController);
-
-    return state.when(
-      data: (items) => _buildSliverList(context, items),
-      loading: () =>
-          loadingBuilder?.call(context) ?? const SliverToBoxAdapter(),
-      error: (e, stk) =>
-          errorBuilder?.call(context, e) ?? const SliverToBoxAdapter(),
-      onGoingLoading: (items) => _buildSliverList(context, items),
-      onGoingError: (items, e, stk) => _buildSliverList(context, items),
-    );
-  }
-
-  Widget _buildSliverList(BuildContext context, List<T> items) {
-    if (items.isEmpty && emptyBuilder != null) {
-      return emptyBuilder?.call(context) ?? const SliverToBoxAdapter();
-    }
-    return SliverList(
-      delegate: SliverChildBuilderDelegate(
-        (context, index) => itemBuilder(items[index]),
-        childCount: items.length,
-      ),
-    );
-  }
-}
-
 // This widget should be placed at the bottom of your view so that when a user
 // reaches the end of a list, we show them a progress indicator indicating that we
 // are loading the next batch of items
