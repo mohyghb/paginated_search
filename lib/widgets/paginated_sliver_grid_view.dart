@@ -4,11 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../paginated_search.dart';
 import 'abstract_paginated_view.dart';
 
-class PaginatedSliverListView<T, F> extends AbstractPaginatedView<T,F> {
+class PaginatedSliverGridView<T, F> extends AbstractPaginatedView<T,F> {
 
   final SliverGridDelegate gridDelegate;
 
-  const PaginatedSliverListView({
+  const PaginatedSliverGridView({
     super.key,
     required this.gridDelegate,
     required super.paginatedController,
