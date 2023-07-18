@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../paginated_search.dart';
 import 'abstract_paginated_view.dart';
 
 // Helper class for showing items of a paginated search in a sliver list view

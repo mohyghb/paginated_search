@@ -1,3 +1,8 @@
+## 1.2.0
+* Added sliver grid
+* refactored some classes + code cleanup
+* now we don't perform search if the previous filter equals the newly set filter
+
 ## 1.1.1
 * changed the paginated controller requirement to be autoDispose again (You can keep the data with keepAlive)
 

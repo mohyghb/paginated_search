@@ -1,6 +1,6 @@
 name: paginated_search
 description: A packaged aimed at reducing the code needed to write search with pagination.
-version: 1.1.1
+version: 1.2.0
 homepage: https://github.com/mohyghb/paginated_search
 
 environment:

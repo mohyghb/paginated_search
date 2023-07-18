@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../paginated_search.dart';
 import 'abstract_paginated_view.dart';
 
 class PaginatedSliverGridView<T, F> extends AbstractPaginatedView<T,F> {
