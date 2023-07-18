@@ -74,7 +74,7 @@ class _MyHomePageState extends PaginatedSearchViewState<MyHomePage>
               centerTitle: false,
               title: Text(
                 'Paginated Search',
-                style: context.textTheme.headline5.bold,
+                style: context.textTheme.headlineSmall.bold,
               ),
             ),
             const Text('Search through your data easily')
