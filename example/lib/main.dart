@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:moye/moye.dart';
-import 'package:paginated_search/paginated_search.dart';
+import 'package:paginate/paginate.dart';
 
 void main() {
   runApp(const ProviderScope(child: MyApp()));

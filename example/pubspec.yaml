@@ -39,7 +39,7 @@ dependencies:
   riverpod: ^2.1.1
   flutter_riverpod: ^2.1.1
   moye: 1.1.0
-  paginated_search:
+  paginate:
     path: '../'
 
 dev_dependencies:

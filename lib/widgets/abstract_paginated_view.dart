@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:paginated_search/base_paginated_controller.dart';
-import 'package:paginated_search/paginated_search_view.dart';
-import 'package:paginated_search/paginated_state.dart';
+import 'package:paginate/base_paginated_controller.dart';
+import 'package:paginate/paginated_search_view.dart';
+import 'package:paginate/paginated_state.dart';
 
 abstract class AbstractPaginatedView<T, F> extends ConsumerWidget {
   final AutoDisposeStateNotifierProvider<BasePaginatedController<T, F>,
