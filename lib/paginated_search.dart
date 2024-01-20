@@ -1,4 +1,4 @@
-library paginate;
+library paginated_search;
 
 export 'base_paginated_controller.dart';
 export 'paginated_state.dart';
