@@ -43,7 +43,7 @@ abstract class PaginatedSearchViewState<P extends PaginatedSearchView> extends C
     double currentScroll = scrollController.position.pixels;
     double delta = MediaQuery.of(context).size.width * 0.20;
     if (maxScroll - currentScroll <= delta) {
-      ref.read(widget.paginatedController.notifier).fetchNextBatch();
+      ref.read(widget.paginatedController.notifier).fetchNextPage();
     }
   }
 }

@@ -28,6 +28,8 @@ class PaginatedSearchController<T> extends AutoDisposeNotifier<PaginatedState<T>
   // Counter used for debouncing
   int _debounceCounter = 0;
 
+  Timer? _timer;
+
   PaginatedSearchController({
     required this.searchProvider,
     this.pageSize = defaultPageSize,
@@ -82,7 +84,14 @@ class PaginatedSearchController<T> extends AutoDisposeNotifier<PaginatedState<T>
   }
 
   /// Fetch the next set of items from the same search
-  Future<void> fetchNextBatch() async {
+  Future<void> fetchNextPage() async {
+    if (_timer?.isActive == true) {
+      // already processing another request
+      return;
+    }
+
+    _startTimer();
+
     if (state.hasNoMoreItems) {
       return;
     } else if (state.type == PaginatedStateType.onGoingLoading) {
@@ -128,5 +137,12 @@ class PaginatedSearchController<T> extends AutoDisposeNotifier<PaginatedState<T>
         error: e,
       );
     }
+  }
+
+  // starts the timer so that we don't perform multiple searches at once while
+  // another search is in process (timer is active)
+  // Used for [fetchNextBatch]
+  void _startTimer() {
+    _timer = Timer(const Duration(seconds: 1), () {});
   }
 }

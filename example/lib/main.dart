@@ -37,9 +37,6 @@ class MockSearchProvider extends SearchProvider<int> {
   @override
   Future<List<int>> performSearch(Ref ref, PaginatedState<int> state) async {
     await Future.delayed(const Duration(milliseconds: 400));
-    if (state.items.length > 30) {
-      return Future.error("error");
-    }
     return List.generate(state.pageSize, (index) => state.page * state.pageSize + index);
   }
 }
@@ -69,14 +66,11 @@ class _MyHomePageState extends PaginatedSearchViewState<MyHomePage> with TickerP
         child: CustomScrollView(
           controller: paginatedScrollController,
           slivers: [
-            s8HeightBoxSliver,
-            SliverAppBar(
-              centerTitle: false,
-              title: Text(
-                'Paginated Search',
-                style: context.textTheme.headlineSmall.bold,
-              ),
-            ),
+            s16HeightBoxSliver,
+            Text(
+              'Paginated Search',
+              style: context.textTheme.headlineMedium.bold,
+            ).withPadding(s16HorizontalPadding).asSliver,
             const Text('Search through your data easily').withPadding(s16HorizontalPadding).asSliver,
             s32HeightBoxSliver,
             TextField(
@@ -91,12 +85,12 @@ class _MyHomePageState extends PaginatedSearchViewState<MyHomePage> with TickerP
             PaginatedSliverListView(
               paginatedController: paginatedSearchControllerProvider,
               itemBuilder: (item) => Card(
-                color: context.colorScheme.tertiaryContainer,
+                elevation: 8,
                 child: Text(
                   'Item $item',
-                  style: TextStyle(color: context.colorScheme.onTertiaryContainer),
-                ).withPadding(s16Padding),
-              ).withPadding(s16HorizontalPadding),
+                  style: TextStyle(color: context.colorScheme.onSecondaryContainer, fontWeight: FontWeight.bold),
+                ).withPadding(s24Padding),
+              ).withPadding(s4Vertical8Horizontal),
               loadingBuilder: (_) => const CircularProgressIndicator.adaptive().alignCenter.asSliver,
               errorBuilder: (context, error) => const Text("Error happened").asSliver,
             ),
