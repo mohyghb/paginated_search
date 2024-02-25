@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+
 import 'abstract_paginated_view.dart';
 
+// Helper class for showing items of a paginated search in a Sliver Grid View
 class PaginatedSliverGridView<T, F> extends AbstractPaginatedView<T,F> {
 
   final SliverGridDelegate gridDelegate;

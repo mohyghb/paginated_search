@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:moye/moye.dart';
 import 'package:paginated_search/paginated_helpers.dart';
 import 'package:paginated_search/paginated_search.dart';
-import 'package:paginated_search/search_provider.dart';
 
 void main() {
   runApp(const ProviderScope(child: MyApp()));
@@ -92,13 +91,13 @@ class _MyHomePageState extends PaginatedSearchViewState<MyHomePage> with TickerP
                 ).withPadding(s24Padding),
               ).withPadding(s4Vertical8Horizontal),
               loadingBuilder: (_) => const CircularProgressIndicator.adaptive().alignCenter.asSliver,
-              errorBuilder: (context, error) => const Text("Error happened").asSliver,
+              errorBuilder: (context, error, st) => const Text("Error happened").asSliver,
             ),
             s32HeightBoxSliver,
             PaginatedBottomWidget(
               paginatedController: paginatedSearchControllerProvider,
               onGoingLoading: (context) => const CircularProgressIndicator.adaptive().alignCenter,
-              onGoingErrorBuilder: (context, error) => const Text("Something went wrong").alignCenter,
+              onGoingErrorBuilder: (context, error, st) => const Text("Something went wrong").alignCenter,
             ).asSliver,
           ],
         ),
