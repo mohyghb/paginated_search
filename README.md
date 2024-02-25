@@ -1,37 +1,49 @@
-Pagination made easy! This package depends on freezed and riverpod packages to make the workflow seamless.
+Pagination made easy with Riverpod!
 
 ## Features
 
-<img src="https://user-images.githubusercontent.com/37986616/221440014-8e4d02cf-10ba-431b-b401-dcee81f45170.gif" height="600">
+<img src="https://github.com/mohyghb/paginated_search/assets/37986616/15bce472-49fe-4411-893a-a28bff79cdb6" height="600">
 
-- Show loading items when fetching next batch
-- Automatically load the next batch of items
-- Customizable (error, load, show items)
+- Show loading items when fetching next page
+- Automatically load the next page of items as user scrolls towards the bottom of the list (infinite-scroll-view)
+- Customizable: customize error, loader, and other views
 
 
 ## Getting started
 
-This package depends on https://pub.dev/packages/riverpod and https://pub.dev/packages/freezed. Make sure you know how to use those packages.
+This package depends on https://pub.dev/packages/riverpod. Make sure you know how to use those packages.
 
 ## Usage
 
+Create a SearchProvider first. SearchProviders provide the search data to the pagination controller. You can use the paginated state to know more about the current state of pagination, which page you are on, how many items to get for each page, etc...
+
 ```dart
+class MockSearchProvider extends SearchProvider<int> {
+  @override
+  Future<List<int>> performSearch(Ref ref, PaginatedState<int> state) async {
+    await Future.delayed(const Duration(milliseconds: 400));
+    return List.generate(state.pageSize, (index) => state.page * state.pageSize + index);
+  }
+}
+```
 
-// this search contorller has 'int' items and 'dynamic' filter.
-final paginatedSearchControllerProvider = StateNotifierProvider.autoDispose<
-    BasePaginatedController<int, dynamic>, PaginatedState<int>>(
-  (ref) => BasePaginatedController<int, dynamic>(
-    searchProvider: (controller) async {
-      // mock search delay
-      await Future.delayed(const Duration(milliseconds: 400));
-      return List.generate(12, (index) => index);
-    },
-    batchSize: 12,
-  ),
+Create a paginated controller provider to allow pagination view handle different flows.
+
+```dart
+final paginatedSearchControllerProvider = createPaginatedController(
+  searchProvider: MockSearchProvider()
 );
+```
 
-class MyHomePage extends PaginatedSearchView<int, dynamic> {
-  const MyHomePage({super.key, required super.paginatedController});
+Now you can create your paginated search view:
+
+```dart
+class MyHomePage extends PaginatedSearchView<int> {
+  const MyHomePage({
+    super.key,
+    required super.paginatedController,
+    super.invalidateOnDispose = false,
+  });
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() {
@@ -39,69 +51,57 @@ class MyHomePage extends PaginatedSearchView<int, dynamic> {
   }
 }
 
-class _MyHomePageState extends PaginatedSearchViewState<int, dynamic> {
+class _MyHomePageState extends PaginatedSearchViewState<MyHomePage> with TickerProviderStateMixin {
+  late final tabController = TabController(length: 2, vsync: this);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle.dark,
-        child: SafeArea(
-          bottom: false,
-          child: CustomScrollView(
-            controller: scrollController,
-            slivers: [
-              s8HeightBoxSliver,
-              SliverAppBar(
-                centerTitle: false,
-                title: Text(
-                  'Paginated Search',
-                  style: context.textTheme.headline5.bold,
-                ),
+        body: AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.dark,
+      child: SafeArea(
+        child: CustomScrollView(
+          controller: paginatedScrollController,
+          slivers: [
+            s16HeightBoxSliver,
+            Text(
+              'Paginated Search',
+              style: context.textTheme.headlineMedium.bold,
+            ).withPadding(s16HorizontalPadding).asSliver,
+            const Text('Search through your data easily').withPadding(s16HorizontalPadding).asSliver,
+            s32HeightBoxSliver,
+            TextField(
+              onChanged: (value) => ref.read(paginatedSearchControllerProvider.notifier).search(),
+              decoration: const InputDecoration(
+                prefixIcon: Icon(Icons.search_rounded),
+                hintText: 'Search...',
+                filled: true,
               ),
-              const Text('Search through your data easily')
-                  .withPadding(s16HorizontalPadding)
-                  .asSliver,
-              s32HeightBoxSliver,
-              TextField(
-                controller: ref
-                    .read(paginatedSearchControllerProvider.notifier)
-                    .searchController,
-                onChanged: (value) =>
-                    ref.read(paginatedSearchControllerProvider.notifier).search(),
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(Icons.search_rounded),
-                  hintText: 'Search...',
-                  filled: true,
-                ),
-              ).withPadding(s16HorizontalPadding).asSliver,
-              s32HeightBoxSliver,
-              PaginatedSliverListView(
-                paginatedController: super.widget.paginatedController,
-                itemBuilder: (item) => Card(
-                  color: context.colorScheme.tertiaryContainer,
-                  child: Text(
-                    'Item $item',
-                    style:
-                        TextStyle(color: context.colorScheme.onTertiaryContainer),
-                  ).withPadding(s16Padding),
-                ).withPadding(s16HorizontalPadding),
-                loadingBuilder: (_) => const CircularProgressIndicator.adaptive()
-                    .alignCenter
-                    .asSliver,
-              ),
-              s32HeightBoxSliver,
-              PaginatedBottomWidget(
-                paginatedController: super.widget.paginatedController,
-                onGoingLoading: (context) =>
-                    const CircularProgressIndicator.adaptive().alignCenter,
-              ).asSliver,
-            ],
-          ),
-        ).withHeaderOverlayGlow(context: context),
-      ),
-    );
+            ).withPadding(s16HorizontalPadding).asSliver,
+            s32HeightBoxSliver,
+            PaginatedSliverListView(
+              paginatedController: paginatedSearchControllerProvider,
+              itemBuilder: (item) => Card(
+                elevation: 8,
+                child: Text(
+                  'Item $item',
+                  style: TextStyle(color: context.colorScheme.onSecondaryContainer, fontWeight: FontWeight.bold),
+                ).withPadding(s24Padding),
+              ).withPadding(s4Vertical8Horizontal),
+              loadingBuilder: (_) => const CircularProgressIndicator.adaptive().alignCenter.asSliver,
+              errorBuilder: (context, error, st) => const Text("Error happened").asSliver,
+            ),
+            s32HeightBoxSliver,
+            PaginatedBottomWidget(
+              paginatedController: paginatedSearchControllerProvider,
+              onGoingLoading: (context) => const CircularProgressIndicator.adaptive().alignCenter,
+              onGoingErrorBuilder: (context, error, st) => const Text("Something went wrong").alignCenter,
+            ).asSliver,
+          ],
+        ),
+      ).withHeaderOverlayGlow(context: context),
+    ));
   }
-}
 ```
 
 ## Additional information
