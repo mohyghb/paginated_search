@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+
 import 'abstract_paginated_view.dart';
 
 // Helper class for showing items of a paginated search in a grid view

@@ -4,8 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'paginated_helpers.dart';
 import 'paginated_state_type.dart';
 
-typedef PaginationErrorBuilder = Widget Function(BuildContext context, Object? error);
-
 // Automatically fetches the next batch using the paginatedController
 abstract class PaginatedSearchView<T> extends ConsumerStatefulWidget {
   final PaginatedSearchControllerProvider<T> paginatedController;
@@ -75,7 +73,7 @@ class PaginatedBottomWidget<T> extends ConsumerWidget {
       case PaginatedStateType.onGoingLoading:
         return onGoingLoading(context);
       case PaginatedStateType.onGoingError:
-        return onGoingErrorBuilder?.call(context, state.error) ?? const SizedBox.shrink();
+        return onGoingErrorBuilder?.call(context, state.error, state.stackTrace) ?? const SizedBox.shrink();
     }
   }
 }
