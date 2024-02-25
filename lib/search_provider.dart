@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:paginated_search/paginated_search.dart';
+import 'paginated_state.dart';
 
 // Searches items and provides them to PaginatedSearchController
 abstract class SearchProvider<T> {

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:paginated_search/paginated_search_controller.dart';
+
 import 'paginated_state_type.dart';
 
 typedef WidgetFromItemBuilder<T> = Widget Function(T item);
 
+/// An state of paginated search. Contains information regarding which [page] we are on, what the [pageSize] of each page
+/// is, what the current [type] of this state is, its loaded [items] and more.
 class PaginatedState<T> {
 
   // which page of search we are on, the first page is denoted as 0
@@ -21,6 +24,8 @@ class PaginatedState<T> {
   final StackTrace? stackTrace;
 
   // Helper fields
+  // Useful to use when your search provider needs the latest returned item in order to determine the
+  // next page to be sent
   T? get lastItemOrNull => items.isEmpty ? null : items.last;
 
   const PaginatedState({
