@@ -4,7 +4,7 @@ import 'package:paginated_search/paginated_helpers.dart';
 import 'package:paginated_search/paginated_state.dart';
 import 'package:paginated_search/paginated_state_type.dart';
 
-abstract class AbstractPaginatedView<T, F> extends ConsumerWidget {
+abstract class AbstractPaginatedView<T> extends ConsumerWidget {
   final PaginatedSearchControllerProvider<T> paginatedController;
   final WidgetFromItemBuilder<T> itemBuilder;
   final PaginationErrorBuilder? errorBuilder;
@@ -29,8 +29,11 @@ abstract class AbstractPaginatedView<T, F> extends ConsumerWidget {
 
     return switch (state.type) {
       PaginatedStateType.data => whenData(context, items),
-      PaginatedStateType.loading => loadingBuilder?.call(context) ?? const SliverToBoxAdapter(),
-      PaginatedStateType.error => errorBuilder?.call(context, state.error, state.stackTrace) ?? const SliverToBoxAdapter(),
+      PaginatedStateType.loading =>
+        loadingBuilder?.call(context) ?? const SliverToBoxAdapter(),
+      PaginatedStateType.error =>
+        errorBuilder?.call(context, state.error, state.stackTrace) ??
+            const SliverToBoxAdapter(),
       PaginatedStateType.onGoingLoading => whenData(context, items),
       PaginatedStateType.onGoingError => whenData(context, items),
     };
