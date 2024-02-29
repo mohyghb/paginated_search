@@ -1,3 +1,8 @@
+## 2.0.0
+* BREAKING CHANGE: updated paginated controller and state to use a more clean architecture
+* Added paginated helpers for constructing paginated controllers easily
+* Added SearchProvider abstraction to make the paginated controller architecture cleaner
+
 ## 1.2.0
 * Added sliver grid
 * refactored some classes + code cleanup
