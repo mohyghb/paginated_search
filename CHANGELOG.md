@@ -1,3 +1,6 @@
+## 2.1.0
+* Removed the generic filter type F from paginated widgets
+
 ## 2.0.0
 * BREAKING CHANGE: updated paginated controller and state to use a more clean architecture
 * Added paginated helpers for constructing paginated controllers easily

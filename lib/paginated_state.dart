@@ -8,7 +8,6 @@ typedef WidgetFromItemBuilder<T> = Widget Function(T item);
 /// An state of paginated search. Contains information regarding which [page] we are on, what the [pageSize] of each page
 /// is, what the current [type] of this state is, its loaded [items] and more.
 class PaginatedState<T> {
-
   // which page of search we are on, the first page is denoted as 0
   final int page;
   // The number of items to retrieve for a page

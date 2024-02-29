@@ -7,7 +7,8 @@ import 'paginated_state.dart';
 import 'paginated_state_type.dart';
 import 'search_provider.dart';
 
-class PaginatedSearchController<T> extends AutoDisposeNotifier<PaginatedState<T>> {
+class PaginatedSearchController<T>
+    extends AutoDisposeNotifier<PaginatedState<T>> {
   static const initialPage = 0;
   static const defaultPageSize = 20;
   static const defaultDebounceDuration = Duration(milliseconds: 500);
@@ -134,7 +135,9 @@ class PaginatedSearchController<T> extends AutoDisposeNotifier<PaginatedState<T>
       _updateItems(items);
     } catch (e) {
       state = state.copyWith(
-        type: state.type == PaginatedStateType.loading ? PaginatedStateType.error : PaginatedStateType.onGoingError,
+        type: state.type == PaginatedStateType.loading
+            ? PaginatedStateType.error
+            : PaginatedStateType.onGoingError,
         error: e,
       );
     }

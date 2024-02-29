@@ -28,15 +28,15 @@ class MyApp extends StatelessWidget {
   }
 }
 
-final paginatedSearchControllerProvider = createPaginatedController(
-  searchProvider: MockSearchProvider()
-);
+final paginatedSearchControllerProvider =
+    createPaginatedController(searchProvider: MockSearchProvider());
 
 class MockSearchProvider extends SearchProvider<int> {
   @override
   Future<List<int>> performSearch(Ref ref, PaginatedState<int> state) async {
     await Future.delayed(const Duration(milliseconds: 400));
-    return List.generate(state.pageSize, (index) => state.page * state.pageSize + index);
+    return List.generate(
+        state.pageSize, (index) => state.page * state.pageSize + index);
   }
 }
 
@@ -53,7 +53,8 @@ class MyHomePage extends PaginatedSearchView<int> {
   }
 }
 
-class _MyHomePageState extends PaginatedSearchViewState<MyHomePage> with TickerProviderStateMixin {
+class _MyHomePageState extends PaginatedSearchViewState<MyHomePage>
+    with TickerProviderStateMixin {
   late final tabController = TabController(length: 2, vsync: this);
 
   @override
@@ -70,10 +71,13 @@ class _MyHomePageState extends PaginatedSearchViewState<MyHomePage> with TickerP
               'Paginated Search',
               style: context.textTheme.headlineMedium.bold,
             ).withPadding(s16HorizontalPadding).asSliver,
-            const Text('Search through your data easily').withPadding(s16HorizontalPadding).asSliver,
+            const Text('Search through your data easily')
+                .withPadding(s16HorizontalPadding)
+                .asSliver,
             s32HeightBoxSliver,
             TextField(
-              onChanged: (value) => ref.read(paginatedSearchControllerProvider.notifier).search(),
+              onChanged: (value) =>
+                  ref.read(paginatedSearchControllerProvider.notifier).search(),
               decoration: const InputDecoration(
                 prefixIcon: Icon(Icons.search_rounded),
                 hintText: 'Search...',
@@ -87,17 +91,24 @@ class _MyHomePageState extends PaginatedSearchViewState<MyHomePage> with TickerP
                 elevation: 8,
                 child: Text(
                   'Item $item',
-                  style: TextStyle(color: context.colorScheme.onSecondaryContainer, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                      color: context.colorScheme.onSecondaryContainer,
+                      fontWeight: FontWeight.bold),
                 ).withPadding(s24Padding),
               ).withPadding(s4Vertical8Horizontal),
-              loadingBuilder: (_) => const CircularProgressIndicator.adaptive().alignCenter.asSliver,
-              errorBuilder: (context, error, st) => const Text("Error happened").asSliver,
+              loadingBuilder: (_) => const CircularProgressIndicator.adaptive()
+                  .alignCenter
+                  .asSliver,
+              errorBuilder: (context, error, st) =>
+                  const Text("Error happened").asSliver,
             ),
             s32HeightBoxSliver,
             PaginatedBottomWidget(
               paginatedController: paginatedSearchControllerProvider,
-              onGoingLoading: (context) => const CircularProgressIndicator.adaptive().alignCenter,
-              onGoingErrorBuilder: (context, error, st) => const Text("Something went wrong").alignCenter,
+              onGoingLoading: (context) =>
+                  const CircularProgressIndicator.adaptive().alignCenter,
+              onGoingErrorBuilder: (context, error, st) =>
+                  const Text("Something went wrong").alignCenter,
             ).asSliver,
           ],
         ),

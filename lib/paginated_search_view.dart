@@ -18,7 +18,8 @@ abstract class PaginatedSearchView<T> extends ConsumerStatefulWidget {
   });
 }
 
-abstract class PaginatedSearchViewState<P extends PaginatedSearchView> extends ConsumerState<P> {
+abstract class PaginatedSearchViewState<P extends PaginatedSearchView>
+    extends ConsumerState<P> {
   // Assign this controller to your scroll view. This allows for automatic fetching as user scrolls through the items
   final paginatedScrollController = ScrollController();
 
@@ -27,7 +28,8 @@ abstract class PaginatedSearchViewState<P extends PaginatedSearchView> extends C
     super.initState();
 
     // show more items on page end
-    paginatedScrollController.addListener(() => fetchNextBatchOnPageEnd(paginatedScrollController, context, ref));
+    paginatedScrollController.addListener(
+        () => fetchNextBatchOnPageEnd(paginatedScrollController, context, ref));
   }
 
   // helper method to fetch next batch of search items when user reaches near the end
@@ -65,7 +67,7 @@ class PaginatedBottomWidget<T> extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(paginatedController);
-    switch(state.type) {
+    switch (state.type) {
       case PaginatedStateType.data:
       case PaginatedStateType.loading:
       case PaginatedStateType.error:
@@ -73,7 +75,9 @@ class PaginatedBottomWidget<T> extends ConsumerWidget {
       case PaginatedStateType.onGoingLoading:
         return onGoingLoading(context);
       case PaginatedStateType.onGoingError:
-        return onGoingErrorBuilder?.call(context, state.error, state.stackTrace) ?? const SizedBox.shrink();
+        return onGoingErrorBuilder?.call(
+                context, state.error, state.stackTrace) ??
+            const SizedBox.shrink();
     }
   }
 }
