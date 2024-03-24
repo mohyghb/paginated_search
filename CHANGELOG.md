@@ -1,3 +1,7 @@
+## 2.1.1
+* Fixed the issue where `loadInitialPage` threw an error for `PaginatedSearchController`
+* Updated dependencies
+
 ## 2.1.0
 * Removed the generic filter type F from paginated widgets
 
