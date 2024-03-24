@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
 }
 
 final paginatedSearchControllerProvider =
-    createPaginatedController(searchProvider: MockSearchProvider());
+    createPaginatedController(searchProvider: MockSearchProvider(), loadInitialPage: true);
 
 class MockSearchProvider extends SearchProvider<int> {
   @override

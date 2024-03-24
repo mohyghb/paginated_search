@@ -42,7 +42,10 @@ class PaginatedSearchController<T>
   @override
   PaginatedState<T> build() {
     if (loadInitialPage) {
-      _loadInitialPage();
+      // make sure the widget has been built before loading the initial page
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        _loadInitialPage();
+      });
     }
     return PaginatedState(
       page: initialPage,
