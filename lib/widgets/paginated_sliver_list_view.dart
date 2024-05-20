@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'abstract_paginated_view.dart';
 
 // Helper class for showing items of a paginated search in a sliver list view
-class PaginatedSliverListView<T> extends AbstractPaginatedView<T> {
+class PaginatedSliverListView<T, Q> extends AbstractPaginatedView<T, Q> {
   const PaginatedSliverListView({
     super.key,
     required super.paginatedController,

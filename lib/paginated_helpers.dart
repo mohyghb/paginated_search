@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:paginated_search/paginated_search.dart';
 
-typedef PaginatedSearchControllerProvider<T> = AutoDisposeNotifierProvider<
-    PaginatedSearchController<T>, PaginatedState<T>>;
+typedef PaginatedSearchControllerProvider<T, Q> = AutoDisposeNotifierProvider<
+    PaginatedSearchController<T, Q>, PaginatedState<T, Q>>;
 typedef PaginationErrorBuilder = Widget Function(
     BuildContext context, Object? error, StackTrace? stackTrace);
 
@@ -14,19 +14,21 @@ typedef PaginationErrorBuilder = Widget Function(
 /// final recipesPaginatedControllerProvider = createPaginatedController(searchProvider: RecipesSearchProvider());
 /// ```
 /// This would simplify your controller creation and make your code easier to read.
-AutoDisposeNotifierProvider<PaginatedSearchController<T>, PaginatedState<T>>
-    createPaginatedController<T>({
-  required SearchProvider<T> searchProvider,
+AutoDisposeNotifierProvider<PaginatedSearchController<T, Q>, PaginatedState<T, Q>>
+    createPaginatedController<T, Q>({
+  required SearchProvider<T, Q> searchProvider,
   int pageSize = PaginatedSearchController.defaultPageSize,
   Duration debounceDuration = PaginatedSearchController.defaultDebounceDuration,
-  bool loadInitialPage = false,
+  Q? initialQuery,
+  bool debugLoggingEnabled = true,
 }) {
   return NotifierProvider.autoDispose(
-    () => PaginatedSearchController<T>(
+    () => PaginatedSearchController<T, Q>(
       searchProvider: searchProvider,
       pageSize: pageSize,
       debounceDuration: debounceDuration,
-      loadInitialPage: loadInitialPage,
+      initialPageQuery: initialQuery,
+      debugLoggingEnabled: debugLoggingEnabled,
     ),
   );
 }

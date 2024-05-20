@@ -29,18 +29,18 @@ class MyApp extends StatelessWidget {
 }
 
 final paginatedSearchControllerProvider =
-    createPaginatedController(searchProvider: MockSearchProvider(), loadInitialPage: true);
+    createPaginatedController(searchProvider: MockSearchProvider(), initialQuery: "Initial Query");
 
-class MockSearchProvider extends SearchProvider<int> {
+class MockSearchProvider extends SearchProvider<String, String> {
   @override
-  Future<List<int>> performSearch(Ref ref, PaginatedState<int> state) async {
+  Future<List<String>> performSearch(Ref ref, PaginatedState<String, String> state) async {
     await Future.delayed(const Duration(milliseconds: 400));
     return List.generate(
-        state.pageSize, (index) => state.page * state.pageSize + index);
+        state.pageSize, (index) => '${state.query ?? "No Query"} - ${state.page * state.pageSize + index}');
   }
 }
 
-class MyHomePage extends PaginatedSearchView<int> {
+class MyHomePage extends PaginatedSearchView<String, String> {
   const MyHomePage({
     super.key,
     required super.paginatedController,
@@ -77,7 +77,7 @@ class _MyHomePageState extends PaginatedSearchViewState<MyHomePage>
             s32HeightBoxSliver,
             TextField(
               onChanged: (value) =>
-                  ref.read(paginatedSearchControllerProvider.notifier).search(),
+                  ref.read(paginatedSearchControllerProvider.notifier).search(query: value),
               decoration: const InputDecoration(
                 prefixIcon: Icon(Icons.search_rounded),
                 hintText: 'Search...',
@@ -90,7 +90,7 @@ class _MyHomePageState extends PaginatedSearchViewState<MyHomePage>
               itemBuilder: (item) => Card(
                 elevation: 8,
                 child: Text(
-                  'Item $item',
+                  item,
                   style: TextStyle(
                       color: context.colorScheme.onSecondaryContainer,
                       fontWeight: FontWeight.bold),

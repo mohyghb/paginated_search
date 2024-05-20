@@ -1,3 +1,8 @@
+## 3.0.0
+* BREAKING CHANGE: Refactored the codebase to allow taking in a query for the paginated search controller and search provider
+* You can now enable/disable debug logging for the paginated search controller
+* You can now set a initial query for the paginated search controller to load in when initialized
+
 ## 2.1.1
 * Fixed the issue where `loadInitialPage` threw an error for `PaginatedSearchController`
 * Updated dependencies

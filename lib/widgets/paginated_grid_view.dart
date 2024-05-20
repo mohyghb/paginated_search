@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'abstract_paginated_view.dart';
 
 // Helper class for showing items of a paginated search in a grid view
-class PaginatedGridView<T> extends AbstractPaginatedView<T> {
+class PaginatedGridView<T, Q> extends AbstractPaginatedView<T, Q> {
   final Axis scrollDirection;
   final bool reverse;
   final ScrollController? controller;

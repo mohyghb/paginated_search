@@ -7,22 +7,21 @@ import 'paginated_state.dart';
 import 'paginated_state_type.dart';
 import 'search_provider.dart';
 
-class PaginatedSearchController<T>
-    extends AutoDisposeNotifier<PaginatedState<T>> {
+class PaginatedSearchController<T, Q> extends AutoDisposeNotifier<PaginatedState<T, Q>> {
   static const initialPage = 0;
   static const defaultPageSize = 20;
   static const defaultDebounceDuration = Duration(milliseconds: 500);
 
   // The function that is called to generate a search
-  final SearchProvider<T> searchProvider;
+  final SearchProvider<T, Q> searchProvider;
 
   // The amount of time between debouncing a search. Useful for when having a search as you type feature
   // so that you don't send multiple queries to your backend for each individual keystrokes
   final Duration debounceDuration;
 
-  // True if the initial batch should be loaded when the view is opened
-  // False if no search items should be available on initial load
-  final bool loadInitialPage;
+  // If this query is set, the initial page will be loaded with this query
+  // Otherwise the initial page will be empty
+  final Q? initialPageQuery;
 
   // The number of items to retrieve for a page
   final int pageSize;
@@ -32,16 +31,21 @@ class PaginatedSearchController<T>
 
   Timer? _timer;
 
+  // if true, will print debug logs, enabled by default
+  bool debugLoggingEnabled;
+
   PaginatedSearchController({
     required this.searchProvider,
     this.pageSize = defaultPageSize,
     this.debounceDuration = defaultDebounceDuration,
-    this.loadInitialPage = false,
+    this.initialPageQuery,
+    this.debugLoggingEnabled = true,
   });
 
   @override
-  PaginatedState<T> build() {
-    if (loadInitialPage) {
+  PaginatedState<T, Q> build() {
+    final initialQuery = initialPageQuery;
+    if (initialQuery != null) {
       // make sure the widget has been built before loading the initial page
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         _loadInitialPage();
@@ -58,7 +62,7 @@ class PaginatedSearchController<T>
 
   // The function to be called for the initial search, whether it automatically gets called as user types
   // or when they hit the search button
-  void search() async {
+  void search({required Q? query}) async {
     state = state.copyWith(type: PaginatedStateType.loading);
     _debounceCounter++;
     int tempDebounceCounter = _debounceCounter;
@@ -68,12 +72,11 @@ class PaginatedSearchController<T>
 
     if (_debounceCounter != tempDebounceCounter) {
       // there was another search requested, we will complete the other search and skip this one
-      debugPrint('debounced search $tempDebounceCounter');
       return;
     }
 
     // resetting the variables for this new search
-    state = state.getInitialSearchState();
+    state = state.getInitialSearchState(query: query);
     _performSearch();
   }
 
@@ -103,7 +106,7 @@ class PaginatedSearchController<T>
       return;
     }
 
-    debugPrint('PaginatedSearchController.fetchNextBatch');
+    _printDebugLog('PaginatedSearchController.fetchNextBatch');
 
     // use the same query to fetch the next items in search
     // show ongoing loading
@@ -114,7 +117,7 @@ class PaginatedSearchController<T>
 
   // Loads the initial page
   void _loadInitialPage() {
-    search();
+    search(query: initialPageQuery);
   }
 
   void _updateItems(List<T> results) {
@@ -134,13 +137,12 @@ class PaginatedSearchController<T>
   /// calls the passed in [searchProvider] to retrieve items
   Future<void> _performSearch() async {
     try {
+      _printDebugLog("PaginatedSearchController - perform search - query ${state.query}");
       final items = await searchProvider.performSearch(ref, state);
       _updateItems(items);
     } catch (e) {
       state = state.copyWith(
-        type: state.type == PaginatedStateType.loading
-            ? PaginatedStateType.error
-            : PaginatedStateType.onGoingError,
+        type: state.type == PaginatedStateType.loading ? PaginatedStateType.error : PaginatedStateType.onGoingError,
         error: e,
       );
     }
@@ -151,5 +153,11 @@ class PaginatedSearchController<T>
   // Used for [fetchNextBatch]
   void _startTimer() {
     _timer = Timer(const Duration(seconds: 1), () {});
+  }
+
+  void _printDebugLog(String log) {
+    if (debugLoggingEnabled) {
+      debugPrint(log);
+    }
   }
 }

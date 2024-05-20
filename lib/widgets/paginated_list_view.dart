@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'abstract_paginated_view.dart';
 
 // Helper class for showing items of a paginated search in a list view
-class PaginatedListView<T> extends AbstractPaginatedView<T> {
+class PaginatedListView<T, Q> extends AbstractPaginatedView<T, Q> {
   final Axis scrollDirection;
   final bool reverse;
   final ScrollController? controller;
