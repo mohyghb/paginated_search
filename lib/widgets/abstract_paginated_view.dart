@@ -4,8 +4,8 @@ import 'package:paginated_search/paginated_helpers.dart';
 import 'package:paginated_search/paginated_state.dart';
 import 'package:paginated_search/paginated_state_type.dart';
 
-abstract class AbstractPaginatedView<T> extends ConsumerWidget {
-  final PaginatedSearchControllerProvider<T> paginatedController;
+abstract class AbstractPaginatedView<T, Q> extends ConsumerWidget {
+  final PaginatedSearchControllerProvider<T, Q> paginatedController;
   final WidgetFromItemBuilder<T> itemBuilder;
   final PaginationErrorBuilder? errorBuilder;
   final WidgetBuilder? loadingBuilder;

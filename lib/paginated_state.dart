@@ -7,7 +7,7 @@ typedef WidgetFromItemBuilder<T> = Widget Function(T item);
 
 /// An state of paginated search. Contains information regarding which [page] we are on, what the [pageSize] of each page
 /// is, what the current [type] of this state is, its loaded [items] and more.
-class PaginatedState<T> {
+class PaginatedState<T, Q> {
   // which page of search we are on, the first page is denoted as 0
   final int page;
   // The number of items to retrieve for a page
@@ -21,6 +21,7 @@ class PaginatedState<T> {
   // only applicable if the type is [error] or [onGoingError]
   final Object? error;
   final StackTrace? stackTrace;
+  final Q? query;
 
   // Helper fields
   // Useful to use when your search provider needs the latest returned item in order to determine the
@@ -33,21 +34,23 @@ class PaginatedState<T> {
     required this.type,
     required this.hasNoMoreItems,
     required this.items,
+    this.query,
     this.error,
     this.stackTrace,
   });
 
-  PaginatedState<T> getInitialSearchState() {
-    return PaginatedState<T>(
+  PaginatedState<T, Q> getInitialSearchState({required Q? query}) {
+    return PaginatedState<T, Q>(
       page: PaginatedSearchController.initialPage,
       pageSize: pageSize,
       type: PaginatedStateType.loading,
       hasNoMoreItems: false,
       items: [],
+      query: query,
     );
   }
 
-  PaginatedState<T> copyWith({
+  PaginatedState<T, Q> copyWith({
     int? page,
     int? pageSize,
     PaginatedStateType? type,
@@ -55,8 +58,9 @@ class PaginatedState<T> {
     List<T>? items,
     Object? error,
     StackTrace? stackTrace,
+    Q? query,
   }) {
-    return PaginatedState<T>(
+    return PaginatedState<T, Q>(
       page: page ?? this.page,
       pageSize: pageSize ?? this.pageSize,
       type: type ?? this.type,
@@ -64,6 +68,7 @@ class PaginatedState<T> {
       items: items ?? this.items,
       error: error ?? this.error,
       stackTrace: stackTrace ?? this.stackTrace,
+      query: query ?? this.query,
     );
   }
 }

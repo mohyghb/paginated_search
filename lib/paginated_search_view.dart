@@ -5,8 +5,8 @@ import 'paginated_helpers.dart';
 import 'paginated_state_type.dart';
 
 // Automatically fetches the next batch using the paginatedController
-abstract class PaginatedSearchView<T> extends ConsumerStatefulWidget {
-  final PaginatedSearchControllerProvider<T> paginatedController;
+abstract class PaginatedSearchView<T, Q> extends ConsumerStatefulWidget {
+  final PaginatedSearchControllerProvider<T, Q> paginatedController;
 
   // whether to invalidate the [paginatedController] or not when this widget is disposed
   final bool invalidateOnDispose;
@@ -51,8 +51,8 @@ abstract class PaginatedSearchViewState<P extends PaginatedSearchView>
 // This widget should be placed at the bottom of your view so that when a user
 // reaches the end of a list, we show them a progress indicator indicating that we
 // are loading the next batch of items
-class PaginatedBottomWidget<T> extends ConsumerWidget {
-  final PaginatedSearchControllerProvider<T> paginatedController;
+class PaginatedBottomWidget<T, Q> extends ConsumerWidget {
+  final PaginatedSearchControllerProvider<T, Q> paginatedController;
 
   final PaginationErrorBuilder? onGoingErrorBuilder;
   final WidgetBuilder onGoingLoading;
