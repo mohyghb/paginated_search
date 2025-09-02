@@ -28,15 +28,18 @@ class MyApp extends StatelessWidget {
   }
 }
 
-final paginatedSearchControllerProvider =
-    createPaginatedController(searchProvider: MockSearchProvider(), initialQuery: "Initial Query");
+final paginatedSearchControllerProvider = createPaginatedController(
+    searchProvider: MockSearchProvider(), initialQuery: "Initial Query");
 
 class MockSearchProvider extends SearchProvider<String, String> {
   @override
-  Future<List<String>> performSearch(Ref ref, PaginatedState<String, String> state) async {
+  Future<List<String>> performSearch(
+      Ref ref, PaginatedState<String, String> state) async {
     await Future.delayed(const Duration(milliseconds: 400));
     return List.generate(
-        state.pageSize, (index) => '${state.query ?? "No Query"} - ${state.page * state.pageSize + index}');
+        state.pageSize,
+        (index) =>
+            '${state.query ?? "No Query"} - ${state.page * state.pageSize + index}');
   }
 }
 
@@ -76,8 +79,9 @@ class _MyHomePageState extends PaginatedSearchViewState<MyHomePage>
                 .asSliver,
             s32HeightBoxSliver,
             TextField(
-              onChanged: (value) =>
-                  ref.read(paginatedSearchControllerProvider.notifier).search(query: value),
+              onChanged: (value) => ref
+                  .read(paginatedSearchControllerProvider.notifier)
+                  .search(query: value),
               decoration: const InputDecoration(
                 prefixIcon: Icon(Icons.search_rounded),
                 hintText: 'Search...',

@@ -11,6 +11,7 @@ class PaginatedGridView<T, Q> extends AbstractPaginatedView<T, Q> {
   final bool? primary;
   final ScrollPhysics? physics;
   final bool shrinkWrap;
+  final EdgeInsetsGeometry? padding;
   final double? cacheExtent;
   final int? semanticChildCount;
   final DragStartBehavior dragStartBehavior;
@@ -18,6 +19,10 @@ class PaginatedGridView<T, Q> extends AbstractPaginatedView<T, Q> {
   final String? restorationId;
   final Clip clipBehavior;
   final SliverGridDelegate gridDelegate;
+  final bool addAutomaticKeepAlives;
+  final bool addRepaintBoundaries;
+  final bool addSemanticIndexes;
+  final int? findChildIndexCallback;
 
   const PaginatedGridView({
     super.key,
@@ -33,12 +38,17 @@ class PaginatedGridView<T, Q> extends AbstractPaginatedView<T, Q> {
     this.primary,
     this.physics,
     this.shrinkWrap = false,
+    this.padding,
     this.cacheExtent,
     this.semanticChildCount,
     this.dragStartBehavior = DragStartBehavior.start,
     this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
     this.restorationId,
     this.clipBehavior = Clip.hardEdge,
+    this.addAutomaticKeepAlives = true,
+    this.addRepaintBoundaries = true,
+    this.addSemanticIndexes = true,
+    this.findChildIndexCallback,
   });
 
   @override
@@ -53,17 +63,24 @@ class PaginatedGridView<T, Q> extends AbstractPaginatedView<T, Q> {
       primary: primary,
       physics: physics,
       shrinkWrap: shrinkWrap,
+      padding: padding,
       cacheExtent: cacheExtent,
       semanticChildCount: semanticChildCount,
       dragStartBehavior: dragStartBehavior,
       keyboardDismissBehavior: keyboardDismissBehavior,
       restorationId: restorationId,
       clipBehavior: clipBehavior,
+      addAutomaticKeepAlives: addAutomaticKeepAlives,
+      addRepaintBoundaries: addRepaintBoundaries,
+      addSemanticIndexes: addSemanticIndexes,
       itemCount: items.length,
       gridDelegate: gridDelegate,
       itemBuilder: (BuildContext context, int index) {
         return itemBuilder(items[index]);
       },
+      findChildIndexCallback: findChildIndexCallback != null
+          ? (Key key) => findChildIndexCallback
+          : null,
     );
   }
 }

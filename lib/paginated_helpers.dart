@@ -14,8 +14,8 @@ typedef PaginationErrorBuilder = Widget Function(
 /// final recipesPaginatedControllerProvider = createPaginatedController(searchProvider: RecipesSearchProvider());
 /// ```
 /// This would simplify your controller creation and make your code easier to read.
-AutoDisposeNotifierProvider<PaginatedSearchController<T, Q>, PaginatedState<T, Q>>
-    createPaginatedController<T, Q>({
+AutoDisposeNotifierProvider<PaginatedSearchController<T, Q>,
+    PaginatedState<T, Q>> createPaginatedController<T, Q>({
   required SearchProvider<T, Q> searchProvider,
   int pageSize = PaginatedSearchController.defaultPageSize,
   Duration debounceDuration = PaginatedSearchController.defaultDebounceDuration,

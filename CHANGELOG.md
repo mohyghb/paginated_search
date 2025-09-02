@@ -1,3 +1,10 @@
+## 3.1.0
+* Enhanced all paginated widgets to include comprehensive parameter support matching their respective Material widgets
+* Added padding, addAutomaticKeepAlives, addRepaintBoundaries, addSemanticIndexes, findChildIndexCallback, itemExtent, and prototypeItem parameters to PaginatedListView
+* Added padding, addAutomaticKeepAlives, addRepaintBoundaries, addSemanticIndexes, and findChildIndexCallback parameters to PaginatedGridView
+* Added addAutomaticKeepAlives, addRepaintBoundaries, addSemanticIndexes, and findChildIndexCallback parameters to PaginatedSliverGridView and PaginatedSliverListView
+* Improved widget flexibility and customization options
+
 ## 3.0.0
 * BREAKING CHANGE: Refactored the codebase to allow taking in a query for the paginated search controller and search provider
 * You can now enable/disable debug logging for the paginated search controller

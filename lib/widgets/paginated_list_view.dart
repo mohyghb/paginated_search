@@ -11,12 +11,19 @@ class PaginatedListView<T, Q> extends AbstractPaginatedView<T, Q> {
   final bool? primary;
   final ScrollPhysics? physics;
   final bool shrinkWrap;
+  final EdgeInsetsGeometry? padding;
   final double? cacheExtent;
   final int? semanticChildCount;
   final DragStartBehavior dragStartBehavior;
   final ScrollViewKeyboardDismissBehavior keyboardDismissBehavior;
   final String? restorationId;
   final Clip clipBehavior;
+  final bool addAutomaticKeepAlives;
+  final bool addRepaintBoundaries;
+  final bool addSemanticIndexes;
+  final double? itemExtent;
+  final Widget? prototypeItem;
+  final int? Function(Key)? findChildIndexCallback;
 
   const PaginatedListView({
     super.key,
@@ -31,12 +38,19 @@ class PaginatedListView<T, Q> extends AbstractPaginatedView<T, Q> {
     this.primary,
     this.physics,
     this.shrinkWrap = false,
+    this.padding,
     this.cacheExtent,
     this.semanticChildCount,
     this.dragStartBehavior = DragStartBehavior.start,
     this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
     this.restorationId,
     this.clipBehavior = Clip.hardEdge,
+    this.addAutomaticKeepAlives = true,
+    this.addRepaintBoundaries = true,
+    this.addSemanticIndexes = true,
+    this.itemExtent,
+    this.prototypeItem,
+    this.findChildIndexCallback,
   });
 
   @override
@@ -51,16 +65,23 @@ class PaginatedListView<T, Q> extends AbstractPaginatedView<T, Q> {
       primary: primary,
       physics: physics,
       shrinkWrap: shrinkWrap,
+      padding: padding,
       cacheExtent: cacheExtent,
       semanticChildCount: semanticChildCount,
       dragStartBehavior: dragStartBehavior,
       keyboardDismissBehavior: keyboardDismissBehavior,
       restorationId: restorationId,
       clipBehavior: clipBehavior,
+      addAutomaticKeepAlives: addAutomaticKeepAlives,
+      addRepaintBoundaries: addRepaintBoundaries,
+      addSemanticIndexes: addSemanticIndexes,
+      itemExtent: itemExtent,
+      prototypeItem: prototypeItem,
       itemCount: items.length,
       itemBuilder: (BuildContext context, int index) {
         return itemBuilder(items[index]);
       },
+      findChildIndexCallback: findChildIndexCallback,
     );
   }
 }

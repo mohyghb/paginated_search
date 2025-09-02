@@ -4,6 +4,11 @@ import 'abstract_paginated_view.dart';
 
 // Helper class for showing items of a paginated search in a sliver list view
 class PaginatedSliverListView<T, Q> extends AbstractPaginatedView<T, Q> {
+  final bool addAutomaticKeepAlives;
+  final bool addRepaintBoundaries;
+  final bool addSemanticIndexes;
+  final int? Function(Key)? findChildIndexCallback;
+
   const PaginatedSliverListView({
     super.key,
     required super.paginatedController,
@@ -11,6 +16,10 @@ class PaginatedSliverListView<T, Q> extends AbstractPaginatedView<T, Q> {
     super.loadingBuilder,
     super.errorBuilder,
     super.emptyBuilder,
+    this.addAutomaticKeepAlives = true,
+    this.addRepaintBoundaries = true,
+    this.addSemanticIndexes = true,
+    this.findChildIndexCallback,
   });
 
   @override
@@ -22,6 +31,10 @@ class PaginatedSliverListView<T, Q> extends AbstractPaginatedView<T, Q> {
       delegate: SliverChildBuilderDelegate(
         (context, index) => itemBuilder(items[index]),
         childCount: items.length,
+        addAutomaticKeepAlives: addAutomaticKeepAlives,
+        addRepaintBoundaries: addRepaintBoundaries,
+        addSemanticIndexes: addSemanticIndexes,
+        findChildIndexCallback: findChildIndexCallback,
       ),
     );
   }
