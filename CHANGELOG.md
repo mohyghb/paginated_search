@@ -1,3 +1,6 @@
+## 4.0.0
+* Breaking Change: Migrated to riverpod 3
+
 ## 3.1.0
 * Enhanced all paginated widgets to include comprehensive parameter support matching their respective Material widgets
 * Added padding, addAutomaticKeepAlives, addRepaintBoundaries, addSemanticIndexes, findChildIndexCallback, itemExtent, and prototypeItem parameters to PaginatedListView

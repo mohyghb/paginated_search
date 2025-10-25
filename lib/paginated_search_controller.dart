@@ -7,8 +7,7 @@ import 'paginated_state.dart';
 import 'paginated_state_type.dart';
 import 'search_provider.dart';
 
-class PaginatedSearchController<T, Q>
-    extends AutoDisposeNotifier<PaginatedState<T, Q>> {
+class PaginatedSearchController<T, Q> extends Notifier<PaginatedState<T, Q>> {
   static const initialPage = 0;
   static const defaultPageSize = 20;
   static const defaultDebounceDuration = Duration(milliseconds: 500);
@@ -54,7 +53,7 @@ class PaginatedSearchController<T, Q>
     }
     return PaginatedState(
       page: initialPage,
-      pageSize: this.pageSize,
+      pageSize: pageSize,
       type: PaginatedStateType.data,
       hasNoMoreItems: false,
       items: [],
@@ -138,15 +137,12 @@ class PaginatedSearchController<T, Q>
   /// calls the passed in [searchProvider] to retrieve items
   Future<void> _performSearch() async {
     try {
-      _printDebugLog(
-          "PaginatedSearchController - perform search - query ${state.query}");
+      _printDebugLog("PaginatedSearchController - perform search - query ${state.query}");
       final items = await searchProvider.performSearch(ref, state);
       _updateItems(items);
     } catch (e) {
       state = state.copyWith(
-        type: state.type == PaginatedStateType.loading
-            ? PaginatedStateType.error
-            : PaginatedStateType.onGoingError,
+        type: state.type == PaginatedStateType.loading ? PaginatedStateType.error : PaginatedStateType.onGoingError,
         error: e,
       );
     }

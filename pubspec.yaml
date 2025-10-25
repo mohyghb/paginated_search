@@ -1,6 +1,6 @@
 name: paginated_search
 description: A packaged aimed at reducing the code needed to write search with pagination.
-version: 3.1.0
+version: 4.0.0
 homepage: https://github.com/mohyghb/paginated_search
 
 environment:
@@ -11,8 +11,8 @@ dependencies:
   flutter:
     sdk: flutter
 
-  riverpod: ^2.5.1
-  flutter_riverpod: ^2.5.1
+  riverpod: ^3.0.3
+  flutter_riverpod: ^3.0.3
 
 dev_dependencies:
   flutter_test:

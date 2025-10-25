@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:paginated_search/paginated_search.dart';
 
-typedef PaginatedSearchControllerProvider<T, Q> = AutoDisposeNotifierProvider<
+typedef PaginatedSearchControllerProvider<T, Q> = NotifierProvider<
     PaginatedSearchController<T, Q>, PaginatedState<T, Q>>;
 typedef PaginationErrorBuilder = Widget Function(
     BuildContext context, Object? error, StackTrace? stackTrace);
@@ -14,7 +14,7 @@ typedef PaginationErrorBuilder = Widget Function(
 /// final recipesPaginatedControllerProvider = createPaginatedController(searchProvider: RecipesSearchProvider());
 /// ```
 /// This would simplify your controller creation and make your code easier to read.
-AutoDisposeNotifierProvider<PaginatedSearchController<T, Q>,
+NotifierProvider<PaginatedSearchController<T, Q>,
     PaginatedState<T, Q>> createPaginatedController<T, Q>({
   required SearchProvider<T, Q> searchProvider,
   int pageSize = PaginatedSearchController.defaultPageSize,
